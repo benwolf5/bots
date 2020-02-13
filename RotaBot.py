@@ -26,24 +26,24 @@ class cellarman_getter():
         while exit_loop == True:
             if shift_type == 0:
                 name = self.cellarman.pop(random.randrange(0,len(self.cellarman)))
-                if name in self.recent:
+                if name in self.cellar_recent:
                     self.cellarman.append(name)
                 else:
-                    self.recent.append(name)
+                    self.cellar_recent.append(name)
                     exit_loop = False                    
             else:
                 name = self.due_busy.pop(random.randrange(0,len(self.due_busy)))
-                if name in self.recent:
+                if name in self.cellar_recent:
                     self.cellarman.append(name)
                 else:
-                    self.recent.append(name)
+                    self.cellar_recent.append(name)
                     exit_loop = False
         if len(self.cellarman) == 0:
             self.cellarman = list(cellarman)
         if len(self.due_busy) == 0:
             self.due_busy = list(cellarman)
-        if len(self.recent) == 10:
-            self.recent = []
+        if len(self.cellar_recent) == 10:
+            self.cellar_recent = []
         return name
 
     def get_barstaff(self):
@@ -86,16 +86,22 @@ week_list = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "
 row_titles = [" ", " ", "Cellarman", "Staff", "Staff", " ", "Quad Cellarman", "Quad Staff", " ", "Door Staff", "Door Staff", " "]
 start_date = datetime.date(2020,4,26)
 deltaday = datetime.timedelta(days=1)
-bar_staff = ["Test1","Test2","Test3","Test4"]
-door_staff = ["Test5","Test6","Test7","Test8"]
 cg = cellarman_getter()
 number_staff = 58
+number_doorstaff = 43
 
 bar_staff = []
-file = open("barstaff.txt","r")
+file_staff = open("barstaff.txt","r")
+file_staff1 = file_staff.readlines()
 for i in range(number_staff):
-    bar_staff.append(file.readline(4*i+1))
-print(bar_staff)
+    bar_staff.append(file_staff1[4*i])
+
+door_staff = []
+file_door = open("doorstaff.txt","r")
+file_door1 = file_door.readlines()
+for i in range(number_doorstaff):
+    door_staff.append(file_door1[4*i])
+
 
 #make it look pretty
 for i in range(3,122):
