@@ -85,10 +85,17 @@ cellarman=["Wolfy","Kavi","Pat","Emilibobs","SGG","Jwal","Izzy","Abi","Sam","Sto
 week_list = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 row_titles = [" ", " ", "Cellarman", "Staff", "Staff", " ", "Quad Cellarman", "Quad Staff", " ", "Door Staff", "Door Staff", " "]
 start_date = datetime.date(2020,4,26)
-deltaday=datetime.timedelta(days=1)
-cg = cellarman_getter()
+deltaday = datetime.timedelta(days=1)
 bar_staff = ["Test1","Test2","Test3","Test4"]
-door_staff=["Test5","Test6","Test7","Test8"]
+door_staff = ["Test5","Test6","Test7","Test8"]
+cg = cellarman_getter()
+number_staff = 58
+
+bar_staff = []
+file = open("barstaff.txt","r")
+for i in range(number_staff):
+    bar_staff.append(file.readline(4*i+1))
+print(bar_staff)
 
 #make it look pretty
 for i in range(3,122):
@@ -129,7 +136,6 @@ for i in range(number_weeks):
 #Bar Staff 
 
 for i in range(number_weeks):
-    print("test")
     for day in range(7):
         for k in range(2):
             current_cell = sheet.cell(row = (12*i)+6+k, column = day + 2)
