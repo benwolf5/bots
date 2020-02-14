@@ -13,35 +13,49 @@ import random
 
 class cellarman_getter():
     def __init__(self):
-        self.cellarman = list(cellarman)
-        self.due_busy = list(cellarman)
+        self.cellarman = dict(zip(cellarman, [0] * len(cellarman)))
+        self.due_busy = dict(zip(cellarman, [0] * len(cellarman)))
         self.bar_staff = list(bar_staff)
         self.door_staff = list(door_staff)
         self.cellar_recent = []
         self.bar_recent = []
         self.door_recent = []
-
-    def get_cellarman(self,shift_type):
+        
+        
+    def get_potential(self, utility, group):
+        listOfPotential = []
+        for key, value in group.items():
+            if value == utility:
+                listOfPotential.append(key)
+        return listOfPotential
+        
+    def get_cellarman(self, shift_type):
         exit_loop = True
         while exit_loop == True:
-            if shift_type == 0:
-                name = self.cellarman.pop(random.randrange(0,len(self.cellarman)))
-                if name in self.cellar_recent:
-                    self.cellarman.append(name)
-                else:
-                    self.cellar_recent.append(name)
-                    exit_loop = False                    
-            else:
-                name = self.due_busy.pop(random.randrange(0,len(self.due_busy)))
-                if name in self.cellar_recent:
-                    self.cellarman.append(name)
-                else:
+            minUtility = min(self.cellarman.items(), key=lambda x: x[1])[1]
+            listOfPotential = self.get_potential(minUtility, self.cellarman)
+            name = listOfPotential.pop(random.randrange(0,len(listOfPotential)))
+            print(name)
+            print(self.cellarman)
+            print(self.due_busy)
+            print(self.cellar_recent)
+            if shift_type == 0: # normal
+                if name not in self.cellar_recent:
+                    self.cellarman[name] += 1
                     self.cellar_recent.append(name)
                     exit_loop = False
-        if len(self.cellarman) == 0:
-            self.cellarman = list(cellarman)
-        if len(self.due_busy) == 0:
-            self.due_busy = list(cellarman)
+            else:
+                offset = 0
+                minUtility = min(self.due_busy.items(), key=lambda x: x[1])[1] + offset
+                listOfPotential_busy = self.get_potential(minUtility, self.due_busy)
+                name = listOfPotential_busy.pop(random.randrange(0,len(listOfPotential_busy)))
+                if name not in self.cellar_recent:
+                    self.due_busy[name] += 1
+                    self.cellar_recent.append(name)
+                    exit_loop = False
+                else:
+                    if len(self.bar_recent) == 1:
+                        offset += 1
         if len(self.cellar_recent) == 10:
             self.cellar_recent = []
         return name
@@ -163,7 +177,8 @@ for i in range(number_weeks):
                 current_cell = sheet.cell(row = (12*i)+12+k, column = day + 2)
                 current_cell.value = cg.get_doorstaff()
                 
-#Cellarman
+#Cellarman 
+current_date = start_date
 for i in range(number_weeks):
     for day in range(7):
         current_cell = sheet.cell(row = (12*i)+5, column = day + 2)
@@ -178,6 +193,8 @@ for i in range(number_weeks):
                     current_cell = sheet.cell(row = (12*i)+9, column = day + 2)
                     current_cell.value = potential_cellarman
                     break
+        current_date = current_date + deltaday
+                
                     
 
 wb.save(r"C:\Users\benwo\OneDrive\Documents\Chad's Year 3\Bar Manager\rota.xlsx")
