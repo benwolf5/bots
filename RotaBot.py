@@ -86,22 +86,24 @@ week_list = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "
 row_titles = [" ", " ", "Cellarman", "Staff", "Staff", " ", "Quad Cellarman", "Quad Staff", " ", "Door Staff", "Door Staff", " "]
 start_date = datetime.date(2020,4,26)
 deltaday = datetime.timedelta(days=1)
-cg = cellarman_getter()
 number_staff = 58
 number_doorstaff = 43
 
+#read bar staff from txt file
 bar_staff = []
 file_staff = open("barstaff.txt","r")
 file_staff1 = file_staff.readlines()
 for i in range(number_staff):
     bar_staff.append(file_staff1[4*i])
 
+#read door staff from txt file
 door_staff = []
 file_door = open("doorstaff.txt","r")
 file_door1 = file_door.readlines()
 for i in range(number_doorstaff):
     door_staff.append(file_door1[4*i])
 
+cg = cellarman_getter()
 
 #make it look pretty
 for i in range(3,122):
@@ -130,6 +132,7 @@ for i in range(number_weeks):
     for j in range(12):
         current_cell = sheet.cell(row=3+j+(12*i),column=1)
         current_cell.value = row_titles[j]
+        current_cell.fill = xl.styles.PatternFill(fgColor="2ECC71",fill_type="solid")
      
 #Date loop
 current_date = start_date
@@ -140,16 +143,16 @@ for i in range(number_weeks):
         current_date = current_date + deltaday
         
 #Bar Staff 
-
 for i in range(number_weeks):
     for day in range(7):
         for k in range(2):
             current_cell = sheet.cell(row = (12*i)+6+k, column = day + 2)
+            if i == 0 and day == 0:
+                current_cell.value = "Barcom"
             current_cell.value = cg.get_barstaff()
             if (day%7 == 3) or (day%7 == 5) or (day%7 == 6):
                 current_cell3 = sheet.cell(row = (12*i)+10, column = day + 2)
                 current_cell3.value = cg.get_barstaff()
-                print(current_cell3.value)
 
 
 #Door Staff
@@ -164,7 +167,10 @@ for i in range(number_weeks):
 for i in range(number_weeks):
     for day in range(7):
         current_cell = sheet.cell(row = (12*i)+5, column = day + 2)
-        current_cell.value = cg.get_cellarman(0)
+        if i == 0 and day == 0:
+            current_cell.value = "Barcom"
+        else:
+            current_cell.value = cg.get_cellarman(0)
         if (day%7 == 3) or (day%7 == 5) or (day%7 == 6):
             while True:
                 potential_cellarman = cg.get_cellarman(1)
@@ -173,4 +179,5 @@ for i in range(number_weeks):
                     current_cell.value = potential_cellarman
                     break
                     
+
 wb.save(r"C:\Users\benwo\OneDrive\Documents\Chad's Year 3\Bar Manager\rota.xlsx")
